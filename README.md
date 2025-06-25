@@ -177,6 +177,143 @@ laravel_app/
 - 一個課程交換涉及兩個用戶和兩個課程
 - 課程交換有狀態管理（pending, accepted, rejected）
 
+## 🚀 Zeabur 部署
+
+本專案已部署至 Zeabur 雲端平台：**https://thu-exchange-course.zeabur.app**
+
+### 部署需求
+
+1. **環境變數設置**
+```env
+# 基本 Laravel 設置
+APP_ENV=production
+APP_DEBUG=false
+APP_KEY=base64:your_app_key_here
+
+# 資料庫設置（推薦使用 MySQL 或 PostgreSQL）
+DB_CONNECTION=mysql
+DB_HOST=your_db_host
+DB_PORT=3306
+DB_DATABASE=your_db_name
+DB_USERNAME=your_db_user
+DB_PASSWORD=your_db_password
+
+# 快取和 Session 設置
+CACHE_DRIVER=file
+SESSION_DRIVER=file
+QUEUE_CONNECTION=sync
+```
+
+2. **建構設置**
+```json
+{
+  "buildCommand": "npm run build && composer install --no-dev --optimize-autoloader",
+  "startCommand": "php artisan config:cache && php artisan route:cache && php artisan view:cache && php-fpm",
+  "installCommand": "composer install && npm install"
+}
+```
+
+3. **部署後執行**
+```bash
+# 生成應用金鑰
+php artisan key:generate
+
+# 執行資料庫遷移
+php artisan migrate --force
+
+# 建立範例資料（可選）
+php artisan db:seed --force
+
+# 清除快取
+php artisan config:clear
+php artisan cache:clear
+php artisan view:clear
+```
+
+### 常見部署問題排除
+
+#### 🔧 登入頁面顯示不出來
+
+**症狀**: 伺服器回傳 200 狀態碼但頁面空白或無法載入
+
+**可能原因與解決方案**:
+
+1. **前端資源未正確編譯**
+```bash
+# 確保在部署前執行
+npm run build
+```
+
+2. **Vite 資源路徑問題**
+檢查 `vite.config.ts` 設置：
+```typescript
+export default defineConfig({
+    // ...existing code...
+    build: {
+        manifest: true,
+        outDir: 'public/build',
+        rollupOptions: {
+            input: 'resources/js/app.ts',
+        },
+    },
+    // ...existing code...
+});
+```
+
+3. **Laravel Mix/Vite 快取問題**
+```bash
+php artisan view:clear
+php artisan config:clear
+rm -rf public/build/*
+npm run build
+```
+
+4. **環境變數檢查**
+```bash
+# 確保 APP_URL 正確設置
+APP_URL=https://thu-exchange-course.zeabur.app
+```
+
+5. **Inertia.js SSR 問題**
+檢查 `resources/js/ssr.ts` 是否正確設置：
+```bash
+# 如果使用 SSR，確保建構 SSR 版本
+npm run build:ssr
+```
+
+#### ⚠️ 關鍵修復：app.blade.php Vite 載入問題
+
+**發現的問題**: `resources/views/app.blade.php` 中的 `@vite` 指令不正確
+
+**錯誤的寫法**:
+```php
+@vite(['resources/js/app.ts', "resources/js/pages/{$page['component']}.vue"])
+```
+
+**正確的寫法**:
+```php
+@vite(['resources/js/app.ts'])
+```
+
+這個錯誤會導致 Vite 試圖載入不存在的檔案路徑，造成前端資源載入失敗。
+
+## ✅ 問題已解決
+
+**根本原因**: `resources/views/app.blade.php` 中的 `@vite` 指令載入了錯誤的檔案路徑，導致前端資源無法正確載入。
+
+**修復步驟**:
+1. ✅ 修正 `app.blade.php` 中的 Vite 指令
+2. ✅ 重新建構前端資源 (`npm run build`)
+3. ✅ 確保 `public/build/` 目錄包含正確的資源檔案
+
+**部署到 Zeabur 後的檢查清單**:
+- [ ] 確保環境變數正確設置
+- [ ] 執行 `php artisan migrate --force`
+- [ ] 執行 `php artisan db:seed --force`（可選）
+- [ ] 清除快取並重新設置
+
+現在您的應用程式應該可以正常顯示登入頁面了！
+
 ## 🧪 測試
 
 ```bash
@@ -219,3 +356,66 @@ vendor/bin/pest
 ---
 
 **快樂交換課程！** 🎓✨
+
+### 🚨 緊急修復：登入頁面顯示問題
+
+基於您的 Zeabur 部署日誌，以下是立即解決方案：
+
+#### 1. 檢查 Vite 建構輸出
+```bash
+# 確保前端資源正確編譯
+npm run build
+
+# 檢查 public/build 目錄是否存在且有檔案
+ls -la public/build/
+```
+
+#### 2. 檢查 Laravel 視圖檔案
+確保 `resources/views/app.blade.php` 正確載入 Vite 資源：
+```php
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- ...existing code... -->
+    @vite(['resources/js/app.ts'])
+    @inertiaHead
+</head>
+<body>
+    @inertia
+</body>
+</html>
+```
+
+#### 3. 立即部署修復
+在 Zeabur 中設置以下建構指令：
+```bash
+# 建構指令
+npm install && npm run build && composer install --no-dev --optimize-autoloader
+
+# 啟動指令
+php artisan config:cache && php artisan view:cache && php-fpm
+```
+
+#### 4. 環境變數確認
+確保在 Zeabur 中設置：
+```env
+APP_URL=https://thu-exchange-course.zeabur.app
+VITE_APP_URL=https://thu-exchange-course.zeabur.app
+```
+
+#### 5. 快速除錯指令
+```bash
+# 清除所有快取
+php artisan config:clear
+php artisan cache:clear
+php artisan view:clear
+php artisan route:clear
+
+# 重新建構前端
+rm -rf public/build
+npm run build
+
+# 重新設置快取
+php artisan config:cache
+php artisan view:cache
+```

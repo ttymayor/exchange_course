@@ -23,8 +23,8 @@ return new class extends Migration
         // 删除会话表（改用文件会话）
         Schema::dropIfExists('sessions');
         
-        // 删除密码重置表（如果不需要密码重置功能）
-        Schema::dropIfExists('password_reset_tokens');
+        // 保留密码重置表（重设密码功能需要）
+        // Schema::dropIfExists('password_reset_tokens');
     }
 
     /**

@@ -23,25 +23,27 @@ const submit = () => {
 </script>
 
 <template>
-    <AuthBase title="Create an account" description="Enter your details below to create your account">
-        <Head title="Register" />
+    <AuthBase title="Sign up 創建一個帳號" description="註冊一個新帳號以開始使用我們的服務。">
+        <Head title="註冊" />
+
+        <p class="rounded-lg p-3 bg-red-400/25 text-red-100 text-sm" >建議使用學校電子郵件地址與密碼，以免您忘記，但切記此網站為第三方服務系統，無法同步學校密碼。</p>
 
         <form @submit.prevent="submit" class="flex flex-col gap-6">
             <div class="grid gap-6">
                 <div class="grid gap-2">
-                    <Label for="name">Name</Label>
+                    <Label for="name">Username 使用者名稱</Label>
                     <Input id="name" type="text" required autofocus :tabindex="1" autocomplete="name" v-model="form.name" placeholder="Full name" />
                     <InputError :message="form.errors.name" />
                 </div>
 
                 <div class="grid gap-2">
-                    <Label for="email">Email address</Label>
+                    <Label for="email">Email 電子信箱</Label>
                     <Input id="email" type="email" required :tabindex="2" autocomplete="email" v-model="form.email" placeholder="email@example.com" />
                     <InputError :message="form.errors.email" />
                 </div>
 
                 <div class="grid gap-2">
-                    <Label for="password">Password</Label>
+                    <Label for="password">Password 密碼</Label>
                     <Input
                         id="password"
                         type="password"
@@ -55,7 +57,7 @@ const submit = () => {
                 </div>
 
                 <div class="grid gap-2">
-                    <Label for="password_confirmation">Confirm password</Label>
+                    <Label for="password_confirmation">Confirm password 驗證密碼</Label>
                     <Input
                         id="password_confirmation"
                         type="password"
@@ -70,13 +72,13 @@ const submit = () => {
 
                 <Button type="submit" class="mt-2 w-full" tabindex="5" :disabled="form.processing">
                     <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin" />
-                    Create account
+                    創建帳號
                 </Button>
             </div>
 
             <div class="text-center text-sm text-muted-foreground">
-                Already have an account?
-                <TextLink :href="route('login')" class="underline underline-offset-4" :tabindex="6">Log in</TextLink>
+                已經有帳號了?
+                <TextLink :href="route('login')" class="underline underline-offset-4" :tabindex="6">登入</TextLink>
             </div>
         </form>
     </AuthBase>
