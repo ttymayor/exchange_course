@@ -2,7 +2,7 @@
   <div class="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
     <!-- 導航欄 -->
     <AppNavigation 
-      title="編輯課程"
+      title="發布交換課程"
       :show-back-button="true"
       :back-route="route('courses.index')"
       back-text="返回課程列表"
@@ -14,12 +14,12 @@
         <div class="flex items-center justify-center mb-4">
           <div class="bg-gradient-to-r from-blue-500 to-indigo-600 p-3 rounded-full shadow-lg">
             <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
             </svg>
           </div>
         </div>
-        <h1 class="text-3xl font-bold text-gray-900 mb-2">編輯課程資訊</h1>
-        <p class="text-gray-600">修改課程的詳細資訊</p>
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">發布交換課程</h1>
+        <p class="text-gray-600">讓學習更靈活，選擇更多樣</p>
       </div>
 
       <!-- 表單區塊 -->
@@ -94,7 +94,9 @@
                 </svg>
                 {{ form.errors.course_code }}
               </div>
-            </div>            <!-- 欲交換課程名稱 -->
+            </div>
+
+            <!-- 欲交換課程名稱 -->
             <div>
               <label for="desired_course" class="flex items-center text-sm font-semibold text-gray-700 mb-2">
                 <svg class="w-4 h-4 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -141,7 +143,7 @@
                   <svg class="w-4 h-4 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                   </svg>
-                  授課教師 <span class="text-gray-400 text-xs">(選填)</span>
+                  授課教師
                 </label>
                 <div class="relative">
                   <input
@@ -164,13 +166,13 @@
                 </div>
               </div>
 
-              <!-- 時間地點 -->
+              <!-- 上課時間地點 -->
               <div>
                 <label for="time_location" class="flex items-center text-sm font-semibold text-gray-700 mb-2">
                   <svg class="w-4 h-4 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                   </svg>
-                  時間地點 <span class="text-gray-400 text-xs">(選填)</span>
+                  時間地點
                 </label>
                 <div class="relative">
                   <input
@@ -199,7 +201,7 @@
                   <svg class="w-4 h-4 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
                   </svg>
-                  學分 <span class="text-gray-400 text-xs">(選填)</span>
+                  學分
                 </label>
                 <div class="relative">
                   <input
@@ -231,7 +233,7 @@
                 <svg class="w-4 h-4 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path>
                 </svg>
-                備註說明 <span class="text-gray-400 text-xs">(選填)</span>
+                備註說明
               </label>
               <div class="relative">
                 <textarea
@@ -271,20 +273,20 @@
             <button
               type="submit"
               :disabled="form.processing"
-              class="w-full sm:w-auto bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 text-white font-semibold px-10 py-3 rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-2xl transform hover:-translate-y-1 active:translate-y-0 cursor-pointer flex items-center justify-center"
+              class="w-full sm:w-auto bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 text-white font-semibold px-10 py-3 rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-2xl transform hover:-translate-y-1 active:translate-y-0"
             >
               <span v-if="form.processing" class="flex items-center justify-center">
                 <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                   <path class="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                更新中...
+                發布中...
               </span>
               <span v-else class="flex items-center justify-center">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                 </svg>
-                更新課程
+                發布課程
               </span>
             </button>
           </div>
@@ -296,28 +298,23 @@
     <AppFooter />
   </div>
 </template>
+
 <script setup>
 import { Link, useForm } from '@inertiajs/vue3'
 import AppNavigation from '@/components/AppNavigation.vue'
 import AppFooter from '@/components/AppFooter.vue'
 
-const props = defineProps({
-  course: Object,
-})
-
 const form = useForm({
-  course_name: props.course.course_name,
-  course_code: props.course.course_code,
-  desired_course: props.course.desired_course || '',
-  instructor: props.course.instructor || '',
-  time_location: (props.course.time_slot && props.course.location) 
-    ? `${props.course.time_slot} @ ${props.course.location}` 
-    : props.course.time_slot || props.course.location || '',
-  credits: props.course.credits || '',
-  description: props.course.description || '',
+  course_name: '',
+  course_code: '',
+  desired_course: '',
+  instructor: '',
+  time_location: '',
+  credits: '',
+  description: '',
 })
 
 const submit = () => {
-  form.put(route('courses.update', props.course.id))
+  form.post(route('courses.store'))
 }
 </script>

@@ -20,6 +20,7 @@ class Course extends Model
         'location',
         'credits',
         'description',
+        'desired_course',
         'status',
     ];
 

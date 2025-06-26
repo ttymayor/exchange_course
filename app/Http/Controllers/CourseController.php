@@ -37,12 +37,17 @@ class CourseController extends Controller
         $validated = $request->validate([
             'course_name' => 'required|string|max:255',
             'course_code' => 'required|string|max:20',
-            'instructor' => 'required|string|max:255',
-            'time_slot' => 'required|string|max:255',
-            'location' => 'required|string|max:255',
-            'credits' => 'required|integer|min:1|max:10',
+            'desired_course' => 'required|string|max:255',
+            'instructor' => 'nullable|string|max:255',
+            'time_location' => 'nullable|string|max:255',
+            'credits' => 'nullable|integer|min:1|max:10',
             'description' => 'nullable|string|max:1000',
         ]);
+
+        // 將 time_location 拆分為 time_slot 和 location（為了向後兼容）
+        $validated['time_slot'] = $validated['time_location'] ?? null;
+        $validated['location'] = $validated['time_location'] ?? null;
+        unset($validated['time_location']);
 
         $validated['user_id'] = auth()->id();
 
@@ -74,12 +79,17 @@ class CourseController extends Controller
         $validated = $request->validate([
             'course_name' => 'required|string|max:255',
             'course_code' => 'required|string|max:20',
-            'instructor' => 'required|string|max:255',
-            'time_slot' => 'required|string|max:255',
-            'location' => 'required|string|max:255',
-            'credits' => 'required|integer|min:1|max:10',
+            'desired_course' => 'required|string|max:255',
+            'instructor' => 'nullable|string|max:255',
+            'time_location' => 'nullable|string|max:255',
+            'credits' => 'nullable|integer|min:1|max:10',
             'description' => 'nullable|string|max:1000',
         ]);
+
+        // 將 time_location 拆分為 time_slot 和 location（為了向後兼容）
+        $validated['time_slot'] = $validated['time_location'] ?? null;
+        $validated['location'] = $validated['time_location'] ?? null;
+        unset($validated['time_location']);
 
         $course->update($validated);
 

@@ -96,57 +96,54 @@
               </div>
             </div>
 
-            <!-- 學分 -->
+            <!-- 欲交換課程名稱 -->
             <div>
-              <label for="credits" class="flex items-center text-sm font-semibold text-gray-700 mb-2">
-                <svg class="w-4 h-4 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+              <label for="desired_course" class="flex items-center text-sm font-semibold text-gray-700 mb-2">
+                <svg class="w-4 h-4 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
                 </svg>
-                學分 <span class="text-red-500 ml-1">*</span>
+                欲交換課程名稱 <span class="text-red-500 ml-1">*</span>
               </label>
               <div class="relative">
                 <input
-                  id="credits"
-                  v-model="form.credits"
-                  type="number"
-                  min="0"
-                  max="10"
+                  id="desired_course"
+                  v-model="form.desired_course"
+                  type="text"
                   class="w-full px-4 py-3 pl-10 text-gray-900 bg-gray-50 border-2 border-gray-200 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-base"
-                  :class="{ 'border-red-300 bg-red-50': form.errors.credits }"
-                  placeholder="例如：3"
+                  :class="{ 'border-red-300 bg-red-50': form.errors.desired_course }"
+                  placeholder="例如：資料結構、線性代數..."
                   required
                 />
                 <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
                 </svg>
               </div>
-              <div class="mt-1 text-xs text-gray-500">請輸入 0-10 之間的數字</div>
-              <div v-if="form.errors.credits" class="mt-2 flex items-center text-sm text-red-600">
+              <div v-if="form.errors.desired_course" class="mt-2 flex items-center text-sm text-red-600">
                 <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
                 </svg>
-                {{ form.errors.credits }}
+                {{ form.errors.desired_course }}
               </div>
             </div>
           </div>
 
-          <!-- 詳細資訊區塊 -->
+          <!-- 選填資訊區塊 -->
           <div class="border-t border-gray-100 pt-8">
             <h3 class="text-lg font-semibold text-gray-800 mb-6 flex items-center">
               <svg class="w-5 h-5 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
               </svg>
-              詳細資訊
+              選填資訊
             </h3>
             
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <!-- 授課教師 -->
               <div>
                 <label for="instructor" class="flex items-center text-sm font-semibold text-gray-700 mb-2">
                   <svg class="w-4 h-4 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                   </svg>
-                  授課教師 <span class="text-red-500 ml-1">*</span>
+                  授課教師
                 </label>
                 <div class="relative">
                   <input
@@ -156,7 +153,6 @@
                     class="w-full px-4 py-3 pl-10 text-gray-900 bg-gray-50 border-2 border-gray-200 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-base"
                     :class="{ 'border-red-300 bg-red-50': form.errors.instructor }"
                     placeholder="例如：李教授"
-                    required
                   />
                   <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
@@ -170,70 +166,68 @@
                 </div>
               </div>
 
-              <!-- 上課地點 -->
+              <!-- 上課時間地點 -->
               <div>
-                <label for="location" class="flex items-center text-sm font-semibold text-gray-700 mb-2">
+                <label for="time_location" class="flex items-center text-sm font-semibold text-gray-700 mb-2">
                   <svg class="w-4 h-4 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                   </svg>
-                  上課地點 <span class="text-red-500 ml-1">*</span>
+                  時間地點
                 </label>
                 <div class="relative">
                   <input
-                    id="location"
-                    v-model="form.location"
+                    id="time_location"
+                    v-model="form.time_location"
                     type="text"
                     class="w-full px-4 py-3 pl-10 text-gray-900 bg-gray-50 border-2 border-gray-200 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-base"
-                    :class="{ 'border-red-300 bg-red-50': form.errors.location }"
-                    placeholder="例如：C104、ST020、體育館上館"
-                    required
+                    :class="{ 'border-red-300 bg-red-50': form.errors.time_location }"
+                    placeholder="週一 9:00 @ A101"
                   />
                   <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                   </svg>
                 </div>
-                <div v-if="form.errors.location" class="mt-2 flex items-center text-sm text-red-600">
+                <div v-if="form.errors.time_location" class="mt-2 flex items-center text-sm text-red-600">
                   <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
                   </svg>
-                  {{ form.errors.location }}
+                  {{ form.errors.time_location }}
+                </div>
+              </div>
+
+              <!-- 學分 -->
+              <div>
+                <label for="credits" class="flex items-center text-sm font-semibold text-gray-700 mb-2">
+                  <svg class="w-4 h-4 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                  </svg>
+                  學分
+                </label>
+                <div class="relative">
+                  <input
+                    id="credits"
+                    v-model="form.credits"
+                    type="number"
+                    min="0"
+                    max="10"
+                    class="w-full px-4 py-3 pl-10 text-gray-900 bg-gray-50 border-2 border-gray-200 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-base"
+                    :class="{ 'border-red-300 bg-red-50': form.errors.credits }"
+                    placeholder="例如：3"
+                  />
+                  <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                  </svg>
+                </div>
+                <div v-if="form.errors.credits" class="mt-2 flex items-center text-sm text-red-600">
+                  <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                  </svg>
+                  {{ form.errors.credits }}
                 </div>
               </div>
             </div>
 
-            <!-- 上課時間 -->
-            <div class="mt-6">
-              <label for="time_slot" class="flex items-center text-sm font-semibold text-gray-700 mb-2">
-                <svg class="w-4 h-4 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                上課時間 <span class="text-red-500 ml-1">*</span>
-              </label>
-              <div class="relative">
-                <input
-                  id="time_slot"
-                  v-model="form.time_slot"
-                  type="text"
-                  class="w-full px-4 py-3 pl-10 text-gray-900 bg-gray-50 border-2 border-gray-200 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-base"
-                  :class="{ 'border-red-300 bg-red-50': form.errors.time_slot }"
-                  placeholder="例如：周一 9:00-11:00，或是節次"
-                  required
-                />
-                <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-              </div>
-              <div v-if="form.errors.time_slot" class="mt-2 flex items-center text-sm text-red-600">
-                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-                </svg>
-                {{ form.errors.time_slot }}
-              </div>
-            </div>
-
-            <!-- 課程描述 -->
+            <!-- 備註說明 -->
             <div class="mt-6">
               <label for="description" class="flex items-center text-sm font-semibold text-gray-700 mb-2">
                 <svg class="w-4 h-4 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -248,13 +242,12 @@
                   rows="4"
                   class="w-full px-4 py-3 pl-10 text-gray-900 bg-gray-50 border-2 border-gray-200 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-base resize-none"
                   :class="{ 'border-red-300 bg-red-50': form.errors.description }"
-                  placeholder="您可以留下個人聯絡方式或其他備註信息，讓其他人方便與您聯絡交換事宜..."
+                  placeholder="其他想說明的資訊，例如聯絡方式、特殊要求等..."
                 ></textarea>
                 <svg class="absolute left-3 top-4 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path>
                 </svg>
               </div>
-              <div class="mt-1 text-xs text-gray-500">建議包含聯絡方式或交換條件等資訊</div>
               <div v-if="form.errors.description" class="mt-2 flex items-center text-sm text-red-600">
                 <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
@@ -291,7 +284,7 @@
               </span>
               <span v-else class="flex items-center justify-center">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                 </svg>
                 發布課程
               </span>
@@ -314,10 +307,10 @@ import AppFooter from '@/components/AppFooter.vue'
 const form = useForm({
   course_name: '',
   course_code: '',
+  desired_course: '',
   instructor: '',
-  time_slot: '',
-  location: '',
-  credits: 1,
+  time_location: '',
+  credits: '',
   description: '',
 })
 
