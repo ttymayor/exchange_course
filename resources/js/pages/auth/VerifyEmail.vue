@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import TextLink from '@/components/TextLink.vue';
 import { Button } from '@/components/ui/button';
 import AuthLayout from '@/layouts/AuthLayout.vue';
 import { Head, useForm } from '@inertiajs/vue3';
@@ -30,7 +29,9 @@ const submit = () => {
                 Resend verification email
             </Button>
 
-            <TextLink :href="route('logout')" method="post" as="button" class="mx-auto block text-sm"> Log out </TextLink>
+            <form method="POST" action="/logout" class="inline">
+                <button type="submit" class="mx-auto block text-sm text-blue-600 hover:text-blue-800 underline hover:no-underline transition-colors duration-200">Log out</button>
+            </form>
         </form>
     </AuthLayout>
 </template>

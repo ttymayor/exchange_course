@@ -46,7 +46,7 @@
             <form @submit.prevent="logout" class="inline">
               <button 
                 type="submit"
-                class="bg-red-500/80 hover:bg-red-600 text-white px-4 py-2 rounded-xl transition-all duration-200 font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                class="bg-red-500/80 hover:bg-red-600 text-white px-4 py-2 rounded-xl transition-all duration-200 font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-500/50"
               >
                 <span class="flex items-center">
                   <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
