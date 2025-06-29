@@ -73,7 +73,9 @@ EOF
 COPY . /var/www
 
 # 預建 vendor、storage、bootstrap/cache，給 www-data 權限（Composer 需要）
-RUN chown -R www-data:www-data /var/www
+RUN mkdir -p /var/www/storage /var/www/bootstrap/cache \
+ && chown -R www-data:www-data /var/www \
+ && chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
 # 使用 www-data 安裝（避免權限問題）
 USER www-data
