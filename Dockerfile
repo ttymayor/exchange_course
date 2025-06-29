@@ -72,27 +72,27 @@ EOF
 # 複製專案檔案
 COPY . /var/www
 
-# 預建 vendor、storage、bootstrap/cache，給 www-data 權限（Composer 需要）
-RUN mkdir -p /var/www/storage /var/www/bootstrap/cache \
+RUN mkdir -p /var/www/resources/views /var/www/storage /var/www/bootstrap/cache \
  && chown -R www-data:www-data /var/www \
  && chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
-# 使用 www-data 安裝（避免權限問題）
 USER www-data
 
-# 安裝 PHP 依賴 & 前端依賴 + 建構
 RUN if [ -f composer.json ]; then composer install --optimize-autoloader --classmap-authoritative --no-dev; fi
 RUN if [ -f package.json ]; then npm install && npm run build; fi
 
-# 自動生成 .env & APP_KEY（若未提供）
-RUN if [ ! -f .env ] && [ -f .env.example ]; then cp .env.example .env && php artisan key:generate; fi
+RUN if [ ! -f .env ] && [ -f .env.example ]; then \
+     cp .env.example .env && \
+     grep -q "^APP_KEY=" .env || echo "APP_KEY=" >> .env && \
+     php artisan key:generate \
+; fi
 
-# 清除快取（避免 config:cache 初始錯誤 - 尤其首次建置）
-RUN php artisan config:clear && php artisan cache:clear && php artisan route:clear && php artisan view:clear
+RUN php artisan config:clear || true && \
+    php artisan cache:clear || true && \
+    php artisan route:clear || true && \
+    php artisan view:clear || true
 
 USER root
-
-# 修正 nginx root 指向 public 目錄
 RUN if [ -d /var/www/public ]; then sed -i 's|root /var/www;|root /var/www/public;|' /etc/nginx/sites-enabled/default; fi
 
 CMD nginx; php-fpm;
