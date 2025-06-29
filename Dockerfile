@@ -11,24 +11,22 @@ ENV APP_DEBUG=false
 
 WORKDIR /var/www
 
-# install-php-extensions
+# 安裝 PHP 擴展 & 必備環境
 ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 RUN chmod +x /usr/local/bin/install-php-extensions && sync
 
-# apt dependencies and node.js
 RUN set -eux \
-		&& apt update \
-		&& apt install -y cron curl gettext git grep libicu-dev nginx pkg-config unzip \
-		&& rm -rf /var/www/html \
-		&& curl -fsSL https://deb.nodesource.com/setup_22.x -o nodesource_setup.sh \
-		&& bash nodesource_setup.sh \
-		&& apt install -y nodejs \
-		&& rm -rf /var/lib/apt/lists/*
+    && apt update \
+    && apt install -y cron curl gettext git grep libicu-dev nginx pkg-config unzip \
+    && rm -rf /var/www/html \
+    && curl -fsSL https://deb.nodesource.com/setup_22.x -o nodesource_setup.sh \
+    && bash nodesource_setup.sh \
+    && apt install -y nodejs \
+    && rm -rf /var/lib/apt/lists/*
 
-# composer and php extensions
 RUN install-php-extensions @composer apcu bcmath gd intl mysqli opcache pcntl pdo_mysql sysvsem zip
 
-# nginx configuration
+# Nginx 標準設定，反代到 php-fpm
 RUN cat <<'EOF' > /etc/nginx/sites-enabled/default
 server {
     listen 8080;
@@ -71,25 +69,30 @@ server {
 }
 EOF
 
-# 將所有檔案放置正確目錄，保證權限
+# 複製專案檔案
 COPY . /var/www
-RUN mkdir -p /var/www/storage /var/www/bootstrap/cache \
-  && chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache \
-  && chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
-# 切換到非 root，執行依賴安裝與建置
+# 預建 vendor、storage、bootstrap/cache，給 www-data 權限（Composer 需要）
+RUN mkdir -p /var/www/vendor /var/www/storage /var/www/bootstrap/cache \
+ && chown -R www-data:www-data /var/www/vendor /var/www/storage /var/www/bootstrap/cache \
+ && chmod -R 775 /var/www/vendor /var/www/storage /var/www/bootstrap/cache
+
+# 使用 www-data 安裝（避免權限問題）
 USER www-data
+
+# 安裝 PHP 依賴 & 前端依賴 + 建構
 RUN if [ -f composer.json ]; then composer install --optimize-autoloader --classmap-authoritative --no-dev; fi
 RUN if [ -f package.json ]; then npm install && npm run build; fi
 
-# 自動補 .env 與 APP_KEY
+# 自動生成 .env & APP_KEY（若未提供）
 RUN if [ ! -f .env ] && [ -f .env.example ]; then cp .env.example .env && php artisan key:generate; fi
-# 清除舊快取避免環境問題
+
+# 清除快取（避免 config:cache 初始錯誤 - 尤其首次建置）
 RUN php artisan config:clear && php artisan cache:clear && php artisan route:clear && php artisan view:clear
 
 USER root
 
-# 若專案有 public 目錄就修正 nginx root
+# 修正 nginx root 指向 public 目錄
 RUN if [ -d /var/www/public ]; then sed -i 's|root /var/www;|root /var/www/public;|' /etc/nginx/sites-enabled/default; fi
 
 CMD nginx; php-fpm;
