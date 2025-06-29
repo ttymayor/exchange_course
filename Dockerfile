@@ -71,17 +71,25 @@ server {
 }
 EOF
 
-RUN chown -R www-data:www-data /var/www
-COPY --link --chown=www-data:www-data --chmod=755 . /var/www
-RUN mkdir -p /var/www/bootstrap/cache && chown -R www-data:www-data /var/www/bootstrap/cache
+# 將所有檔案放置正確目錄，保證權限
+COPY . /var/www
+RUN mkdir -p /var/www/storage /var/www/bootstrap/cache \
+  && chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache \
+  && chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
-# install dependencies
+# 切換到非 root，執行依賴安裝與建置
 USER www-data
-RUN set -eux \
-		&& if [ -f composer.json ]; then composer install --optimize-autoloader --classmap-authoritative --no-dev; fi \
-		&& if [ -f package.json ]; then npm install && npm run build; fi
+RUN if [ -f composer.json ]; then composer install --optimize-autoloader --classmap-authoritative --no-dev; fi
+RUN if [ -f package.json ]; then npm install && npm run build; fi
+
+# 自動補 .env 與 APP_KEY
+RUN if [ ! -f .env ] && [ -f .env.example ]; then cp .env.example .env && php artisan key:generate; fi
+# 清除舊快取避免環境問題
+RUN php artisan config:clear && php artisan cache:clear && php artisan route:clear && php artisan view:clear
+
 USER root
 
+# 若專案有 public 目錄就修正 nginx root
 RUN if [ -d /var/www/public ]; then sed -i 's|root /var/www;|root /var/www/public;|' /etc/nginx/sites-enabled/default; fi
 
 CMD nginx; php-fpm;
