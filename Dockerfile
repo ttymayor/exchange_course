@@ -73,9 +73,9 @@ EOF
 COPY . /var/www
 
 # 預建 vendor、storage、bootstrap/cache，給 www-data 權限（Composer 需要）
-RUN mkdir -p /var/www/vendor /var/www/storage /var/www/bootstrap/cache \
- && chown -R www-data:www-data /var/www/vendor /var/www/storage /var/www/bootstrap/cache \
- && chmod -R 775 /var/www/vendor /var/www/storage /var/www/bootstrap/cache
+RUN mkdir -p /var/www/vendor /var/www/node_modules /var/www/.npm /var/www/storage /var/www/bootstrap/cache \
+ && chown -R www-data:www-data /var/www/vendor /var/www/node_modules /var/www/.npm /var/www/storage /var/www/bootstrap/cache \
+ && chmod -R 775 /var/www/vendor /var/www/node_modules /var/www/.npm /var/www/storage /var/www/bootstrap/cache
 
 # 使用 www-data 安裝（避免權限問題）
 USER www-data
