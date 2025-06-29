@@ -1,37 +1,89 @@
-# Node.js 階段 - 前端打包
-FROM node:20-slim AS frontend-builder
-WORKDIR /app
-COPY package.json package-lock.json ./
-RUN npm ci --only=production
-COPY resources/ ./resources/
-COPY public/ ./public/
-COPY vite.config.ts ./
-COPY tsconfig.json ./
-COPY tailwind.config.js* ./
-COPY postcss.config.js* ./
-COPY components.json ./
-RUN npm run build
+# syntax=docker/dockerfile:1
 
-# PHP 生產環境
-FROM php:8.3-fpm as production
+ARG PHP_VERSION=8.3
+FROM docker.io/library/php:${PHP_VERSION}-fpm
 
-# 安裝 composer 及系統/擴展（Debian 環境一行解決常見依賴）
-RUN apt-get update && \
-    apt-get install -y nginx supervisor git unzip zip libpng-dev libjpeg-dev libfreetype6-dev libonig-dev libxml2-dev libzip-dev cron && \
-    docker-php-ext-configure gd --with-freetype --with-jpeg && \
-    docker-php-ext-install pdo pdo_mysql mysqli mbstring xml bcmath pcntl gd zip
+LABEL "language"="php"
+LABEL "framework"="laravel"
 
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+ENV APP_ENV=prod
+ENV APP_DEBUG=false
 
-WORKDIR /var/www/html
-COPY composer.json composer.lock ./
-RUN composer install --no-dev --optimize-autoloader --no-interaction --no-progress
-COPY . .
-COPY --from=frontend-builder /app/public/build ./public/build
-RUN chown -R www-data:www-data /var/www/html && \
-    chmod -R 755 /var/www/html/storage && \
-    chmod -R 755 /var/www/html/bootstrap/cache
+WORKDIR /var/www
+
+# install-php-extensions
+ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
+RUN chmod +x /usr/local/bin/install-php-extensions && sync
+
+# apt dependencies and node.js
+RUN set -eux \
+		&& apt update \
+		&& apt install -y cron curl gettext git grep libicu-dev nginx pkg-config unzip \
+		&& rm -rf /var/www/html \
+		&& curl -fsSL https://deb.nodesource.com/setup_22.x -o nodesource_setup.sh \
+		&& bash nodesource_setup.sh \
+		&& apt install -y nodejs \
+		&& rm -rf /var/lib/apt/lists/*
+
+# composer and php extensions
+RUN install-php-extensions @composer apcu bcmath gd intl mysqli opcache pcntl pdo_mysql sysvsem zip
+
+# nginx configuration
+RUN cat <<'EOF' > /etc/nginx/sites-enabled/default
+server {
+    listen 8080;
+    root /var/www;
+
+    add_header X-Frame-Options "SAMEORIGIN";
+    add_header X-Content-Type-Options "nosniff";
+
+    index index.php index.html;
+    charset utf-8;
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location = /robots.txt  { access_log off; log_not_found off; }
+
+    error_page 404 /index.php;
+
+    location ~ \.php$ {
+        try_files $uri =404;
+        fastcgi_split_path_info ^(.+\.php)(/.*)$;
+        fastcgi_pass 127.0.0.1:9000;
+        fastcgi_index index.php;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        fastcgi_param DOCUMENT_ROOT $realpath_root;
+        fastcgi_param PATH_INFO $fastcgi_path_info;
+        fastcgi_hide_header X-Powered-By;
+    }
+
+    location / {
+        try_files $uri $uri/ /index.php$is_args$args;
+        gzip_static on;
+    }
+
+    location ~ /\.(?!well-known).* {
+        deny all;
+    }
+
+    error_log /dev/stderr;
+    access_log /dev/stderr;
+}
+EOF
+
+RUN chown -R www-data:www-data /var/www
+COPY --link --chown=www-data:www-data --chmod=755 . /var/www
+RUN mkdir -p /var/www/bootstrap/cache && chown -R www-data:www-data /var/www/bootstrap/cache
+
+# install dependencies
+USER www-data
+RUN set -eux \
+		&& if [ -f composer.json ]; then composer install --optimize-autoloader --classmap-authoritative --no-dev; fi \
+		&& if [ -f package.json ]; then npm install && npm run build; fi
+USER root
+
+RUN if [ -d /var/www/public ]; then sed -i 's|root /var/www;|root /var/www/public;|' /etc/nginx/sites-enabled/default; fi
+
+CMD nginx; php-fpm;
 
 EXPOSE 8080
-CMD ["php-fpm"]
-
