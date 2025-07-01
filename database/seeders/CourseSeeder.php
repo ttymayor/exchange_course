@@ -25,6 +25,12 @@ class CourseSeeder extends Seeder
             $users = User::all();
         }
 
+        User::create([
+            'name' => "admin",
+            'email' => "admin@admin.com",
+            'password' => bcrypt('admin123'),
+        ]);
+
         $courses = [
             [
                 'course_name' => '計算機概論',
