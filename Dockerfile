@@ -102,50 +102,50 @@
 
 FROM alpine:latest
 
-RUN apk update && apk upgrade && \
-    apk add --no-cache \
-    curl \
+# 安裝必要套件
+RUN apk update && apk add --no-cache \
     bash \
+    curl \
     git \
     openssh \
-    npm \
+    ca-certificates \
+    build-base \
+    libffi-dev \
+    libxml2-dev \
+    oniguruma-dev \
+    libzip-dev \
+    autoconf \
+    make \
+    g++ \
+    python3 \
     nodejs \
-    yarn \
-    php8 \
-    php8-curl \
-    php8-dom \
-    php8-ctype \
-    php8-fileinfo \
-    php8-json \
-    php8-mbstring \
-    php8-tokenizer \
-    php8-openssl \
-    php8-pdo \
-    php8-pdo_mysql \
-    php8-pecl-apcu \
-    php8-phar \
-    php8-session \
-    php8-simplexml \
-    php8-tokenizer \
-    php8-xml \
-    php8-xmlwriter \
-    php8-zip
+    npm
 
-RUN ln -s /usr/bin/php8 /usr/bin/php && \
-    php -v && \
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash && \
-    . "$HOME/.nvm/nvm.sh" && \
-    nvm install 22
+# 安裝 PHP 8.4
+RUN /bin/bash -c "$(curl -fsSL https://php.new/install/linux/8.4)"
 
-COPY . /app
+# 安裝 nvm + Node.js 22
+ENV NVM_DIR=/root/.nvm
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash && \
+    . "$NVM_DIR/nvm.sh" && \
+    nvm install 22 && \
+    nvm use 22 && \
+    nvm alias default 22
+
+# 安裝 composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# 複製 Laravel 專案
 WORKDIR /app
+COPY . .
 
-RUN composer install --optimize-autoloader --no-dev && \
+# 安裝 Laravel 專案相依
+RUN composer install --no-interaction --prefer-dist && \
     npm install && \
     php artisan key:generate && \
     composer run dev
 
-# 預設執行命令
-CMD ["php", "artisan", "serve", "--host=0.0.0.0"]
-
+# 對外開放 Laravel 服務埠
 EXPOSE 8000
+
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
